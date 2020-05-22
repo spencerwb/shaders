@@ -1,0 +1,27 @@
+10/01/19 : 5:00pm :
+
+Q: Is it possible to resize the image so that it takes up less space on the screen?
+
+A: Instead of resizing the image, I could go back to the normal GUI layout and
+manually scale up my UI elements.
+
+Q: Which GL function do I call in teh setCamPosVector
+
+A: I should call context->glUniform3fv()
+
+Q: Why don't we need to include glm in our shader program to use data types
+defined in glm?
+
+A: glsl automatically have a built-in linear algebra library. C++ does not, so
+you always have to import the glm header.
+
+Qt sometimes isn't aware of the OpenGL Shading Library functions I call in my
+shaders. That's why there are sometimes red lines under lines of glsl code.
+
+-------------------------------------------------------------------------------
+
+Q: How do you make sure that the UV coordinates calculated in matcap stay
+within the circle of the image?
+
+
+A:

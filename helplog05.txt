@@ -1,0 +1,10 @@
+Date : Time : Helper :
+My Gaussian Blur function kind of shifts all of the pixels within the image
+toward the upper-left corner. Is this ok?
+
+
+Are you always supposed to add the current fragment color to the current
+fragment in the bloom effect?
+
+How do I get the Matrix post processer to stay in the gui even after you turn
+off shadow builds

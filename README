@@ -1,0 +1,73 @@
+When you run the application, you can select different shaders and materials for the Mario image in the second pop up window. You can also move Mario by left-clicking and dragging in the display window.
+
+
+
+
+My computer has a high resolution, so I always have to insert the
+Add the line: QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+command to my main function in main.cpp above the line: QApplication a(argc, argv);
+
+And when I do this, for this application, the shaderControls UI element is off-
+screen partially. It also doesn't look like it's a normal window, so I can't
+really drag or close the Shader controls. To resolve this issue, I edited the
+code in mainwindow.cpp, specificially line 21 of the MainWindow constructor.
+This is where the UI element is moved to its new class after showing it. That line
+originally said the following...
+
+shaderControls->move(QApplication::desktop()->screen()->rect().center() - this->rect().center() + QPoint(this->width() / 2.0, 0));
+
+But now it says this...
+
+shaderControls->move(QApplication::desktop()->screen()->rect().center() - this->rect().center() + QPoint(this->width() / 1.5, 0));
+
+Everything builds and runs, but just in case the UI element becomes an issue
+when you run it, these notes may be useful.
+
+All of the cpp files in the shaderprograms directory are for setting up the VBOs
+and VBAs for us eon the GPU (VBAs are collections of VBOs).
+
+Whenever I get a handle for memory on the GPU (i.e. a VBO (in/out) or uniform)
+using the command
+context->glGetUniformLocation(GLuint program, const GLchar *name),
+there should exist a variable name in the corresponding shader with the same
+identifier as the string parameter name.
+
+Official documentation from the Khronos Group on how to use functions for
+assigning values to uniforms that are stored on the GPU
+(glUniform*v and glUniformMatrix*):
+https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniform.xhtml
+
+Added the call to setCamPosMatrix() in the mouseMoveEvent of cameracontrols.cpp
+The input of this function is the eye vector (position vector in world space) of
+the camera member variable of the cameracontrols class. This function is called
+from the data member SurfaceShader object called mp_progSurfaceCurrent.
+The setCamPosMatrix member function of surfaceshader.cpp updates the GPU
+variable unifCamPos with the vec3 &pos position which represents the camera's
+position.
+All of these steps are necessary because the camera's position is updated on the
+CPU using the mouse; however, the GPU also needs the camera position to properly
+run shaders that perform calculations based on the camera's position. This
+whole process makes that happen.
+
+
+A05
+
+I found where I can move the shaders control box so that the box is a bit more
+accessible. In line 21 of mainwindow.cpp, the creation of the QPoint at the end
+of the original line originally had this->width() divided by 1.5, but I changed
+it to 1.25 and it still runs.
+
+I think I've finally figured out how to add my matrix shader to thegui. This
+should really be clarified in the instructions because I had to hunt for this
+file that was not ever mentioned. But I just added the line
+<< QApplication::translate("ShaderControls", "The Matrix", Q_NULLPTR)
+at line 110 of ui_shadercontrols.h and then it worked. Also I did add the shader
+to be compilation list thingy in myGL.
+
+For my custom shader, it ay be hard to see the 3D object underneath the shader.
+For more clarity, I find it best to use the Blinn-Phong material and zooming in
+a bit. I wanted to keep the post-process shader because this is how I kind of
+remember the effect from the movie. You always had to look at least a little
+bit to figure out what 3D object was being represented. I also remember that
+the 0 / 1 or whatever language were very evident, so I wanted to try to keep
+the binary a focal point as well as have a decipherable object.
